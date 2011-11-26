@@ -8,8 +8,8 @@ bool isPalindrome(const int &i)
 {
     bool result = true;
     std::string p = boost::lexical_cast<std::string>(i);
-    std::string::iterator it = p.begin();
-    std::string::iterator end = p.end();
+    auto it = p.begin();
+    auto end = p.end();
 
     bool even = p.size() % 2;
 

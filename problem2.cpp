@@ -19,7 +19,6 @@ int main()
         first = tmp;
         if(!(second %2)){
             sum += second;
-            std::cout << sum << std::endl;
             if(second > 4000000)
             {
                 sum -= second;
