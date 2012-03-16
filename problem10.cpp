@@ -1,39 +1,47 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 int main()
 {
     std::vector<int> candidates;
-    const int max = 2000000;
-    for(int i = 2; i < max; ++i)
-        //if(!(i % 2 && i % 3 && i % 5 && i % 7))
-        if(!(i % 2 == 0) && !(i % 3 == 0) && !(i % 5 == 0) && !(i % 7 == 0)
-           && !(i % 11 == 0) && !(i % 13 == 0) && !(i % 17 == 0) && !(i % 19 == 0))
+    const int max = 10;
+    for(int i = 2; i < max; i++)
+        if(i % 2)
             candidates.push_back(i);
 
     std::cout << candidates.size() << std::endl;
+    auto next_candidate_it = candidates.begin();
+    auto end = candidates.end();
 
-    std::vector<int> primes = {2, 3, 5, 7, 11, 13, 17};
+    std::vector<int> primes = {2};
 
-    auto candidate = candidates.begin();
-    while(candidate != candidates.end())
+    while(next_candidate_it != end)
     {
-        bool isPrime = true;
-        for(auto i = primes.cbegin(); i < primes.cend(); ++i)
-            isPrime &= ((*candidate % *i) != 0);
-        if(isPrime)
-        {
-            primes.push_back(*candidate);
-        }
-        candidate++;
+        std::cout << "Tamanho dos candidatos: " << candidates.size() << std::endl;
+        std::cout << "Proximo candidato: " << *next_candidate_it << std::endl;
+        int next_candidate = *next_candidate_it;
+        end = remove_if(candidates.begin(), candidates.end(),
+                        [next_candidate](int prime){
+                            std::cout << "Candidato: " << prime << ", Next: " << next_candidate << ", " << (prime % next_candidate) << std::endl;
+                            if(!(prime % next_candidate)){
+                                std::cout << "Entrou\n";
+                                return true;
+                            }else{
+                                return false;
+                            }
+                        });
+        candidates.erase(end);
+        primes.push_back(next_candidate);
+        next_candidate_it = candidates.begin();
+        std::for_each(candidates.cbegin(), candidates.cend(), [](int prime){ std::cout << prime << " ";});
+        std::cout << std::endl;
     }
 
-    std::cout << primes.size() << std::endl;
-
-    int sum;
-    for(auto i = primes.cbegin(); i < primes.cend(); ++i)
-        sum += *i;
-
+    int sum = 0;
+    std::for_each(primes.cbegin(), primes.cend(), [](int prime){ std::cout << prime << " ";});
+    std::cout << std::endl;
+    std::for_each(primes.cbegin(), primes.cend(), [&sum](int prime){ sum += prime;});
     std::cout << sum << std::endl;
 
     return 0;
