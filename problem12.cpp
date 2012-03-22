@@ -1,10 +1,9 @@
-#include <iostream>
-#include <map>
-#include <set>
 #include <algorithm>
-#include <functional>
+#include <iostream>
+#include <set>
+#include <boost/lexical_cast.hpp>
 
-std::set<int> findAllFactors(const int& value){
+int findAllFactors(const int& value){
     std::set<int> result = {1};
     int current_factor = 2;
     int current_value = value;
@@ -20,24 +19,18 @@ std::set<int> findAllFactors(const int& value){
         ++current_factor;
     }
 
-    return result;
+    return result.size();
 }
 
-int main(){
-    std::set<int> factors = {1};
+int main(int argc, char **argv){
+    int numberOfFactors = boost::lexical_cast<int>(argv[1]);
+
     unsigned long long ndigits = 1;
     unsigned long long current = ndigits;
-    while(factors.size() < 100)
-    {
-        factors = findAllFactors(current);
+
+    do{
         current = current + ++ndigits;
-    }
-
-    std::for_each(factors.begin(), factors.end(), [](int value){ std::cout << value << ", ";});
-    std::cout << std::endl;
-
-    std::cout << ( ndigits - 1 ) << std::endl;
-    std::cout << ( current - ndigits ) << std::endl;
+    }while(findAllFactors(current) < numberOfFactors);
 
     return 0;
 }
