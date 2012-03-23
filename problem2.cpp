@@ -1,7 +1,7 @@
 #include <iostream>
 
-int fib(int max){
-    if(max == 1 || max == 0)
+int fib(const int& max){
+    if(max <= 1)
         return 1;
     return fib(max-1)+fib(max-2);
 }
