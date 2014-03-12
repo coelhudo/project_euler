@@ -37,6 +37,14 @@ std::vector<int> split(const std::string& number)
 
 std::vector<int> sum(std::vector<int> first, std::vector<int> second)
 {
+  // std::cout << "First: ";
+  // std::copy(first.rbegin(), first.rend(), std::ostream_iterator<int>(std::cout));
+  // std::cout << std::endl;
+
+  // std::cout << "Second: ";
+  // std::copy(second.rbegin(), second.rend(), std::ostream_iterator<int>(std::cout));
+  // std::cout << std::endl;
+
   std::vector<int> result;
   std::size_t size = std::min(first.size(), second.size());
   for(int i = 0; i < size; ++i)
@@ -57,6 +65,10 @@ std::vector<int> sum(std::vector<int> first, std::vector<int> second)
       first.at(i+1) = first.at(i+1) + 1;
   }
 
+  // std::cout << "Result: ";
+  // std::copy(result.rbegin(), result.rend(), std::ostream_iterator<int>(std::cout));
+  // std::cout << std::endl;
+
   return result;
 }
 
@@ -69,21 +81,12 @@ int main()
             std::istream_iterator<std::string>(),
             std::back_insert_iterator<std::vector<std::string>>(numbers));
   std::vector<std::vector<int>> bigint;
-  std::transform(begin(numbers), end(numbers), begin(bigint), std::bind(&split,std::placeholders::_1));
-  std::string result = std::accumulate(begin(bigint), end(bigint), "0", std::bind(&sum,std::placeholders::_1, std::placeholders::_2));
+  std::transform(begin(numbers), end(numbers), std::back_inserter(bigint), std::bind(&split,std::placeholders::_1));
+  std::vector<int> result = bigint.front();
+  result= std::accumulate(begin(bigint)+1, end(bigint), result, std::bind(&sum,std::placeholders::_1, std::placeholders::_2));
 
-  // auto firstNumber = split(first);
-  // std::copy(begin(firstNumber), end(firstNumber), std::ostream_iterator<int>(std::cout, "\n"));
-  // std::cout << std::endl;
-  // auto secondNumber = split(second);
-  // std::copy(begin(secondNumber), end(secondNumber), std::ostream_iterator<int>(std::cout, "\n"));
-
-  // std::cout << std::endl;
-  // std::cout << first << "\n";
-  // std::cout << second << "\n";
-  // auto result = sum(firstNumber, secondNumber);
-  // std::copy(result.rbegin(), result.rend(), std::ostream_iterator<int>(std::cout));
-  // std::cout << std::endl;
+  std::copy(result.rbegin(), result.rend(), std::ostream_iterator<int>(std::cout));
+  std::cout << std::endl;
 
   return 0;
 }
