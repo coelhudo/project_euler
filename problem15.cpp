@@ -1,56 +1,60 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 struct Node
 {
-  std::unique_ptr<Node> below;
-  std::unique_ptr<Node> right;
   int x = 0;
   int y = 0;
-  bool belowVisited = false;
-  bool rightVisited = false;
 };
 
-void visit(Node &node, int length, int max, int &count)
+int translateIndex(int x, int y, int maxLength)
 {
-  if(!node.below)
+  std::cout << "(" << x << "," << y << ") -> " << (x * maxLength + y) << "\n";
+  return x * maxLength + y;
+}
+
+void visit(Node *node, int length, std::vector<std::unique_ptr<Node>> &nodes)
+{
+  if(node->y < length)
   {
-    node.below = std::unique_ptr<Node>(new Node());
-    node.below->y = node.y + 1;
-    node.below->x = node.x;
+    int belowIndex = translateIndex(node->x, node->y + 1, length);
+    std::unique_ptr<Node> &belowNode = nodes.at(belowIndex);
+    if(!belowNode)
+    {
+      std::cout << "criei below\n";
+      belowNode = std::unique_ptr<Node>(new Node());
+      belowNode->x = node->x;
+      belowNode->y = node->y + 1;
+    }
+
+    visit(belowNode.get(), length, nodes);
   }
 
-  if(node.y < length)
+  if(node->x < length)
   {
-    node.belowVisited = true;
-    visit(*node.below, length, max + 1, count);
-  }
+    int rightIndex = translateIndex(node->x + 1, node->y, length);
+    std::unique_ptr<Node> &rightNode = nodes.at(rightIndex);
+    if(!rightNode)
+    {
+      std::cout << "criei right\n";
+      rightNode = std::unique_ptr<Node>(new Node());
+      rightNode->x = node->x + 1;
+      rightNode->y = node->y;
+    }
 
-  if(!node.right)
-  {
-    node.right = std::unique_ptr<Node>(new Node());
-    node.right->x = node.x + 1;
-    node.right->y = node.y;
-  }
-
-  if(node.x < length )
-  {
-    node.rightVisited = true;
-    visit(*node.right, length, max + 1, count);
-  }
-
-  if(max == (length * 2))
-  {
-    ++count;
+    visit(rightNode.get(), length, nodes);
   }
 }
 
-int visit(Node &node, int maxLength)
+int visit(std::unique_ptr<Node> node, int maxLength)
 {
-  int count = 0;
-  visit(node, maxLength, 0, count);
-  return count;
+  std::vector<std::unique_ptr<Node>> nodes;
+  nodes.resize((maxLength+1)*(maxLength+1));
+  nodes.at(0) = std::move(node);
+  visit(nodes.at(0).get(), maxLength, nodes);
+  return 0;//nodes.at(0)->visitedNodes;
 }
 
 
@@ -62,7 +66,7 @@ int main(int argc, char **argv)
   formatter >> maxLength;
 
   auto root = std::unique_ptr<Node>(new Node());
-  std::cout << "Max paths: " << visit(*root, maxLength) << std::endl;
+  std::cout << "Max paths: " << visit(std::move(root), maxLength) << std::endl;
 
   return 0;
 }
