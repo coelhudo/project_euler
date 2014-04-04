@@ -15,15 +15,49 @@ int translateIndex(int x, int y, int maxLength)
   return x * maxLength + y;
 }
 
+bool needToVisitRightNode(int x, int y, int maxLength, const std::vector<std::unique_ptr<Node>> &nodes)
+{
+  std::cout << "needToVisitRightNode\n";
+  return (x + 1 < maxLength && y + 1 == maxLength) &&
+    (!nodes.at(translateIndex(x + 1, y, maxLength)));
+}
+
+bool needToVisitBelowNode(int x, int y, int maxLength, const std::vector<std::unique_ptr<Node>> &nodes)
+{
+  std::cout << "needToVisitBelowNode\n";
+  return (y + 1 < maxLength && x + 1 == maxLength) &&
+    (!nodes.at(translateIndex(x, y + 1, maxLength)));
+}
+
+bool needToVisitCentralNode(int x, int y, int maxLength, const std::vector<std::unique_ptr<Node>> &nodes)
+{
+  std::cout << "needToVisitCentralNode\n";
+  return (x + 1 < maxLength && y + 1 < maxLength) &&
+                  (!nodes.at(translateIndex(x + 1, y, maxLength)) ||
+                   !nodes.at(translateIndex(x, y + 1, maxLength)));
+}
+
+bool needToVisitNode(int x, int y, int maxLength, const std::vector<std::unique_ptr<Node>> &nodes)
+{
+  return needToVisitRightNode(x, y, maxLength, nodes) ||
+    needToVisitBelowNode(x, y, maxLength, nodes) ||
+    needToVisitCentralNode(x, y, maxLength, nodes);
+}
+
 void visit(Node *node, int length, std::vector<std::unique_ptr<Node>> &nodes)
 {
+  if(!needToVisitNode(node->x, node->y, length, nodes))
+  {
+    std::cout << "path visited\n";
+    return;
+  }
+
   if(node->y < length)
   {
     int belowIndex = translateIndex(node->x, node->y + 1, length);
     std::unique_ptr<Node> &belowNode = nodes.at(belowIndex);
     if(!belowNode)
     {
-      std::cout << "criei below\n";
       belowNode = std::unique_ptr<Node>(new Node());
       belowNode->x = node->x;
       belowNode->y = node->y + 1;
@@ -38,7 +72,6 @@ void visit(Node *node, int length, std::vector<std::unique_ptr<Node>> &nodes)
     std::unique_ptr<Node> &rightNode = nodes.at(rightIndex);
     if(!rightNode)
     {
-      std::cout << "criei right\n";
       rightNode = std::unique_ptr<Node>(new Node());
       rightNode->x = node->x + 1;
       rightNode->y = node->y;
