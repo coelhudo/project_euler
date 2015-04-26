@@ -1,4 +1,4 @@
-data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Show,Read,Eq)
+data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Show,Read,Eq,Ord)
 
 singleton :: a -> Tree a
 singleton x = Node x EmptyTree EmptyTree
@@ -8,7 +8,10 @@ generate (x,y) (xlimit,ylimit)
     | (x == xlimit) && (y == ylimit) = singleton (x,y)
     | (x == xlimit) && (y < ylimit) = Node (xlimit,y) (generate (xlimit, y+1) (xlimit,ylimit)) EmptyTree
     | (x < xlimit) && (y == ylimit) = Node (x,ylimit) EmptyTree (generate (x+1,ylimit) (xlimit,ylimit))
+-- Remove redundancies
+--    | (x == y) = Node (x,y) (generate (x+1,y) (xlimit,ylimit)) EmptyTree 
     | otherwise = Node (x,y) (generate (x+1,y) (xlimit,ylimit)) (generate (x,y+1) (xlimit,ylimit))
+
 
 -- tail recursion solution
 -- countLeaves :: Tree (Int,Int) -> Int -> Int
@@ -23,8 +26,23 @@ countLeaves (Node _ left EmptyTree) = countLeaves left
 countLeaves (Node _ EmptyTree right) = countLeaves right
 countLeaves (Node _ left right) = countLeaves left + countLeaves right
 
+generateAndCount :: (Int,Int) -> (Int,Int) -> Int
+generateAndCount (x,y) (xlimit,ylimit)
+    | (x == xlimit) && (y == ylimit) = 1
+    | (x == xlimit) && (y < ylimit) = generateAndCount (xlimit, y+1) (xlimit,ylimit)
+    | (x < xlimit) && (y == ylimit) = generateAndCount (x+1,ylimit) (xlimit,ylimit)
+    | otherwise = generateAndCount (x+1,y) (xlimit,ylimit) + generateAndCount (x,y+1) (xlimit,ylimit)
+
+generateHalfAndCount :: (Int,Int) -> (Int,Int) -> Int
+generateHalfAndCount (x,y) (xlimit,ylimit)
+    | (x == xlimit) && (y == ylimit) = 1
+    | (x == xlimit) && (y < ylimit) = generateAndCount (xlimit, y+1) (xlimit,ylimit)
+    | (x < xlimit) && (y == ylimit) = generateAndCount (x+1,ylimit) (xlimit,ylimit)
+    | (x == y) = generateAndCount (x+1,y) (xlimit,ylimit)
+    | otherwise = generateAndCount (x+1,y) (xlimit,ylimit) + generateAndCount (x,y+1) (xlimit,ylimit)
+
 
 main = do
 --       print (countLeaves (generate (0,0) (14,14)) 0)
-       print (countLeaves (generate (0,0) (14,14)))
+       print (generateAndCount (0,0) (20,20))
 
