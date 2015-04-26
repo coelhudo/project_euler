@@ -41,10 +41,10 @@ generateHalfAndCount (x,y) (xlimit,ylimit)
     | (x == xlimit) && (y == ylimit) = 1
     | (x == xlimit) && (y < ylimit) = generateHalfAndCount (xlimit, y+1) (xlimit,ylimit)
     | (x < xlimit) && (y == ylimit) = generateHalfAndCount (x+1,ylimit) (xlimit,ylimit)
-    | (x == y) = generateHalfAndCount (x+1,y) (xlimit,ylimit)
+    | (x == y) = 2 * generateHalfAndCount (x+1,y) (xlimit,ylimit)
     | otherwise = generateHalfAndCount (x+1,y) (xlimit,ylimit) + generateHalfAndCount (x,y+1) (xlimit,ylimit)
 
 main = do
       --print (countLeaves (generate (0,0) (14,14)))
-      print (generateHalfAndCount (0,0) (20,20))
+      print (generateHalfAndCount (0,0) (14,14))
 
