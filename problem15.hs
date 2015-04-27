@@ -46,5 +46,5 @@ generateHalfAndCount (x,y) (xlimit,ylimit)
 
 main = do
       --print (countLeaves (generate (0,0) (14,14)))
-      print (generateHalfAndCount (0,0) (14,14))
+      print (generateHalfAndCount (0,0) (20,20))
 
