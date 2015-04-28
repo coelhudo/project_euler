@@ -36,15 +36,15 @@ generateAndCount (x,y) (xlimit,ylimit)
     | otherwise = generateAndCount (x+1,y) (xlimit,ylimit) + generateAndCount (x,y+1) (xlimit,ylimit)
 
 -- Final solution - still slow but it works. There are a plenty of better solutions in the forum
-generateHalfAndCount :: (Int,Int) -> (Int,Int) -> Int
-generateHalfAndCount (x,y) (xlimit,ylimit)
-    | (x == xlimit) && (y == ylimit) = 1
-    | (x == xlimit) && (y < ylimit) = generateHalfAndCount (xlimit, y+1) (xlimit,ylimit)
-    | (x < xlimit) && (y == ylimit) = generateHalfAndCount (x+1,ylimit) (xlimit,ylimit)
-    | (x == y) = 2 * generateHalfAndCount (x+1,y) (xlimit,ylimit)
-    | otherwise = generateHalfAndCount (x+1,y) (xlimit,ylimit) + generateHalfAndCount (x,y+1) (xlimit,ylimit)
+generateHalfAndCount :: (Int,Int) -> (Int,Int) -> Int -> Int
+generateHalfAndCount (x,y) (xlimit,ylimit) accu
+    | (x == xlimit) && (y == ylimit) = accu + 1
+    | (x == xlimit) && (y < ylimit) = generateHalfAndCount (xlimit, y+1) (xlimit,ylimit) accu
+    | (x < xlimit) && (y == ylimit) = generateHalfAndCount (x+1,ylimit) (xlimit,ylimit) accu
+--    | (x == y) = 2 * generateHalfAndCount (x+1,y) (xlimit,ylimit) accu
+    | otherwise = generateHalfAndCount (x+1,y) (xlimit,ylimit) (generateHalfAndCount (x,y+1) (xlimit,ylimit) accu)
 
 main = do
       --print (countLeaves (generate (0,0) (14,14)))
-      print (generateHalfAndCount (0,0) (20,20))
+      print (generateHalfAndCount (0,0) (14,14) 0)
 
