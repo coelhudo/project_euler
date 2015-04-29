@@ -28,7 +28,8 @@ countLeaves (Node _ left EmptyTree) = countLeaves left
 countLeaves (Node _ EmptyTree right) = countLeaves right
 countLeaves (Node _ left right) = countLeaves left + countLeaves right
 
---Final solution - still slow but it works. There are a plenty of better solutions in the forum
+--Final solution - still slow but it works. There are a plenty of better solutions in the forum. I didnt manage to make a solution that
+--save nodes that already was computed, tried to use Data.map
 countPossiblePathsFrom  :: (Int,Int) -> Int -> Int -> Int
 countPossiblePathsFrom  (x,y) limit accu
     | (x == limit) && (y == limit) = accu + 1
