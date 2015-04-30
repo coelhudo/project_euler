@@ -18,13 +18,6 @@ wordsToInt = map wordToInt
 wordToInt :: [String] -> [Int]
 wordToInt = map read
 
--- maximumPathSum :: [[Int]] -> Int -> Int -> Int
--- maximumPathSum (x:[]) column accumulator = accumulator
--- maximumPathSum (x:y:xs) column accumulator = maximumPathSum (y:xs) findNextColumn (accumulator + maxValue)
---                 where  maxValue = max (y !! column) (y !! nextColumn)
---                        findNextColumn = if (y !! column) < (y !! nextColumn) then nextColumn else column
---                        nextColumn = succ column
-
 maximumPathSum :: [[Int]] -> Int -> [Int] -> [Int]
 maximumPathSum (x:[]) column accumulator = accumulator
 maximumPathSum (x:y:xs) column accumulator = maximumPathSum (y:xs) findNextColumn (accumulator ++ [maxValue])
